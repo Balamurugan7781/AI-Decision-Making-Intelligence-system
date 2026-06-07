@@ -239,4 +239,4 @@ Current Focus:
 
 **Balamurugan Purushothaman**
 
-Aspiring Data Scientist | AI Engineer | FinTech Analytics Enthusiast
+AI Engineer | FinTech Analytics Enthusiast
