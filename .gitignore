@@ -1,0 +1,22 @@
+# Virtual Environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
+
+# Database
+data/business.db
+
+# Logs
+logs/
+
+# Environment variables
+.env
+
+# ML Models
+*.pkl
+*.joblib
