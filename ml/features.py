@@ -1,9 +1,14 @@
-def create_features(data):
-    dti = data['loan_amount'] / max(data['income'],1)
+"""Feature Engineering to build a PD model.
+   
+This model builds a machine-learning ready database from the relational database
 
-    return{
-        "credit score":data['credit_score'],
-        "income":data['income'],
-        "loan_amount":data['loan_amount'],
-        "dti":dti
-    }
+Objective:
+Predict whether a approved loan will default or not. 
+
+Target:
+target_default = 1 if loan_status = 'defaulted' else 0
+
+only pre-approval/application time features are used to predict the target variable.
+Repayment history features are not used h ere because it results in data leakage.
+
+"""
