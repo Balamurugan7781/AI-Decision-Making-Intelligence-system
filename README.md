@@ -189,7 +189,7 @@ AI-FinTech-Decision-Intelligence-System/
 ### Phase 2 — Analytics
 
 - [x] Portfolio Analytics
-- [ ] Risk Analytics
+- [x] Risk Analytics
 - [ ] Customer Analytics
 - [ ] Profitability Analytics
 
