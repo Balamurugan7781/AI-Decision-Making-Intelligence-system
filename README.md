@@ -230,7 +230,6 @@ The objective of this project is to demonstrate how analytics, machine learning,
 🚧 Active Development
 
 Current Focus:
-- Risk Analytics Module
 - Feature Engineering for Probability of Default (PD) Modelling
 
 ---
