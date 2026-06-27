@@ -1,0 +1,40 @@
+{
+    "model_type": "LogisticRegression",
+    "purpose": "Probability of Default prediction",
+    "target": "target_default",
+    "feature_columns": [
+        "age",
+        "annual_income",
+        "existing_debt",
+        "credit_score",
+        "requested_amount",
+        "loan_term_months",
+        "interest_rate",
+        "debt_to_income_ratio",
+        "loan_to_income_ratio",
+        "employment_status_self-employed",
+        "employment_status_unemployed",
+        "region_Leeds",
+        "region_Liverpool",
+        "region_London",
+        "region_Manchester",
+        "segment_prime",
+        "segment_subprime",
+        "channel_mobile_app",
+        "channel_web"
+    ],
+    "training_rows": 1336,
+    "testing_rows": 334,
+    "default_rate_percent": 8.14,
+    "class_weight": "balanced",
+    "random_state": 42,
+    "metrics": {
+        "accuracy": 0.5659,
+        "precision": 0.0903,
+        "recall_default": 0.4815,
+        "f1_score": 0.152,
+        "roc_curve": 0.5289,
+        "pr_auc": 0.0841,
+        "decision_threshold": 0.5
+    }
+}
