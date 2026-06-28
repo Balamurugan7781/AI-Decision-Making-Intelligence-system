@@ -5,6 +5,7 @@ import json
 
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 # importing metrics for model evaluvation..
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix,roc_auc_score,classification_report,average_precision_score
 import joblib # this is for model saving and loading
@@ -26,6 +27,7 @@ METADATA_PATH = MODEL_DIRECTORY / "pd_model_metadata.json"
 # Prepare Training data.....
 RANDOM_STATE = 42
 DECISION_THRESHOLD = 0.50
+TEST_SIZE=0.20
 """def prepare_training_data(df: pd.DataFrame):
     # Separate features and target
     X = pd.drop(columns=['target_default'])
@@ -86,7 +88,43 @@ def model_evaluvation(model,X_test:pd.DataFrame, y_test:pd.Series,threshold:floa
 
     return metrics, matrix,report
 
+def train_and_evaluate_model(model_name,model,X_train,X_test,y_train,y_test):
+    print(f"\nTraining {model_name}...")
 
+    model.fit(X_train, y_train)
+
+    metrics, matrix, report = model_evaluvation(
+        model=model,
+        X_test=X_test,
+        y_test=y_test,
+    )
+
+    print(f"\n{model_name} results")
+    print("=" * 50)
+
+    for metric_name, value in metrics.items():
+        print(f"{metric_name}: {value}")
+
+    print("\nConfusion matrix:")
+    print(matrix)
+
+    print("\nClassification report:")
+    print(report)
+
+    return {
+        "name": model_name,
+        "model": model,
+        "metrics": metrics,
+        "confusion_matrix": matrix,
+    }
+
+
+
+def Logistic_Regression_model():
+    return Pipeline(steps=[("scaler",StandardScaler()),("model",LogisticRegression(class_weight="balanced", max_iter=2000, random_state = 42))])
+
+def Random_Forest_Model():
+    return RandomForestClassifier(n_estimators=300,max_depth = 8, min_samples_split=10,min_samples_leaf=5,class_weight="balanced",random_state=RANDOM_STATE )
 
 def train_pd_model():
     """ Train the PD model and save the baseline PD model """
@@ -108,45 +146,65 @@ def train_pd_model():
     print("\nTesting target distribution:")
     print(Y_test.value_counts())
 
-    # saving the pipeline....
-    model_pipeline = Pipeline(steps=[("scaler",StandardScaler()),("model",LogisticRegression(class_weight="balanced", max_iter=2000, random_state = 42))])
 
-    print("Training Logistic Regression PD model: ")
 
-    model_pipeline.fit(X_train,Y_train)
+    # Building candidate models....
+    logistic_model = Logistic_Regression_model()
+    random_forest = Random_Forest_Model()
 
-    # Y_predictt = model_pipeline.predict_proba(X)
 
-    metrics, matrix,report = model_evaluvation(model = model_pipeline, X_test = X_test, y_test = Y_test)
+    # train and evaluvate candiate models....
+    logistic_result = train_and_evaluate_model("Logistic Regression",logistic_model,X_train,X_test,Y_train,Y_test)
+    # Now for Random Forest...
+    random_forest_result = train_and_evaluate_model("Random Forest",random_forest,X_train,X_test,Y_train,Y_test)
 
+    # let's take both model results...
+    model_results = [logistic_result,random_forest_result]
+
+    # taking the best results....
+    best_result = max(model_results, key = lambda x:x["metrics"]["pr_auc"])
+    best_model_name = best_result["name"]
+    best_model = best_result["model"]
+    best_metrics = best_result["metrics"]
+
+    print("\nBest Model Selected")
+    print("=" * 50)
+    print(f"Model: {best_model_name}")
+    print(f"PR-AUC: {best_metrics['pr_auc']}")
+    print(f"ROC-AUC: {best_metrics['roc_curve']}")
+    print(f"Recall: {best_metrics['recall_default']}")
+    print(f"Precision: {best_metrics['precision']}")
     # save the model and metdata...
 
     MODEL_DIRECTORY.mkdir(parents=True,exist_ok=True)
 
-    joblib.dump(model_pipeline,MODEL_PATH)
-    metadata = {"model_type":"LogisticRegression","purpose": "Probability of Default prediction","target": "target_default","feature_columns": X.columns.tolist(),
-        "training_rows": len(X_train),"testing_rows": len(X_test),"default_rate_percent": round(y.mean()* 100,2),
-        "class_weight": "balanced",
+    joblib.dump(best_model,MODEL_PATH)
+
+    # save model metadata to a JSON file
+    metadata = {
+        "selected_model": best_model_name,
+        "selection_metric": "pr_auc",
+        "model_purpose": "Probability of Default prediction",
+        "target": "target_default",
+        "feature_columns": X.columns.tolist(),
+        "number_of_features": X.shape[1],
+        "training_rows": len(X_train),
+        "testing_rows": len(X_test),
+        "default_rate_percent": round(
+            float(y.mean() * 100),
+            2,
+        ),
+        "test_size": TEST_SIZE,
         "random_state": RANDOM_STATE,
-        "metrics": metrics,
+        "decision_threshold": DECISION_THRESHOLD,
+        "model_results": {
+            result["name"]: result["metrics"]
+            for result in model_results
+        },
     }
 
     with open(METADATA_PATH,"w",encoding="utf-8") as metadata_file:
         json.dump(metadata,metadata_file, indent=4)
-
-    print("\nPD Model Training Completed")
-    print("=" * 55)
-
-    print("\nEvaluation metrics:")
-
-    for metric_name, metric_value in metrics.items():
-        print(f"{metric_name}: {metric_value}")
-
-    print("\nConfusion matrix:")
-    print(matrix)
-
-    print("\nClassification report:")
-    print(report)
 
     print(f"\nModel saved to:")
     print(MODEL_PATH)
@@ -154,7 +212,7 @@ def train_pd_model():
     print("\nModel metadata saved to:")
     print(METADATA_PATH)
 
-    return model_pipeline, metrics
+    return best_model, best_metrics
 
 
 if __name__ == "__main__":

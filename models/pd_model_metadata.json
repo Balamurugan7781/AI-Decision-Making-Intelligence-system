@@ -1,6 +1,7 @@
 {
-    "model_type": "LogisticRegression",
-    "purpose": "Probability of Default prediction",
+    "selected_model": "Random Forest",
+    "selection_metric": "pr_auc",
+    "model_purpose": "Probability of Default prediction",
     "target": "target_default",
     "feature_columns": [
         "age",
@@ -23,18 +24,31 @@
         "channel_mobile_app",
         "channel_web"
     ],
+    "number_of_features": 19,
     "training_rows": 1336,
     "testing_rows": 334,
     "default_rate_percent": 8.14,
-    "class_weight": "balanced",
+    "test_size": 0.2,
     "random_state": 42,
-    "metrics": {
-        "accuracy": 0.5659,
-        "precision": 0.0903,
-        "recall_default": 0.4815,
-        "f1_score": 0.152,
-        "roc_curve": 0.5289,
-        "pr_auc": 0.0841,
-        "decision_threshold": 0.5
+    "decision_threshold": 0.5,
+    "model_results": {
+        "Logistic Regression": {
+            "accuracy": 0.5659,
+            "precision": 0.0903,
+            "recall_default": 0.4815,
+            "f1_score": 0.152,
+            "roc_curve": 0.5289,
+            "pr_auc": 0.0841,
+            "decision_threshold": 0.5
+        },
+        "Random Forest": {
+            "accuracy": 0.9132,
+            "precision": 0.25,
+            "recall_default": 0.037,
+            "f1_score": 0.0645,
+            "roc_curve": 0.5167,
+            "pr_auc": 0.0968,
+            "decision_threshold": 0.5
+        }
     }
 }
