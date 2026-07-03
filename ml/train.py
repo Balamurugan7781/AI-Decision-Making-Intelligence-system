@@ -28,6 +28,7 @@ METADATA_PATH = MODEL_DIRECTORY / "pd_model_metadata.json"
 RANDOM_STATE = 42
 DECISION_THRESHOLD = 0.50
 TEST_SIZE=0.20
+RECALL_RATE = 0.30 # This line is kept for the purpose of removing the models which are having recall rate of less than 30 %.
 """def prepare_training_data(df: pd.DataFrame):
     # Separate features and target
     X = pd.drop(columns=['target_default'])
@@ -162,7 +163,7 @@ def train_pd_model():
     model_results = [logistic_result,random_forest_result]
 
     # taking the best results....
-    best_result = max(model_results, key = lambda x:x["metrics"]["pr_auc"])
+    best_result = max(model_results, key = lambda x:x["metrics"]["pr_auc"] and x["metrics"]["recall_default"]>RECALL_RATE)
     best_model_name = best_result["name"]
     best_model = best_result["model"]
     best_metrics = best_result["metrics"]
