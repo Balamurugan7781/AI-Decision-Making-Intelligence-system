@@ -1,0 +1,16 @@
+policy_version: "credit-policy-v1"
+
+risk_rules:
+  maximum_pd_for_approval: 0.30
+  maximum_pd_for_review: 0.50
+
+affordability_rules:
+  maximum_debt_to_income_ratio: 0.45
+  maximum_loan_to_income_ratio: 0.50
+
+credit_rules:
+  minimum_credit_score: 600
+
+financial_rules:
+  minimum_risk_adjusted_net_profit: 0.00
+  maximum_expected_loss_to_income_ratio: 1.00
