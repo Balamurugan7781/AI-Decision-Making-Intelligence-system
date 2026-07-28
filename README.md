@@ -85,7 +85,8 @@ Feature Engineering
       ↓
 PD Model
       ↓
-Raw Probability of Default ```
+Raw Probability of Default 
+```
 
 Example:
 
