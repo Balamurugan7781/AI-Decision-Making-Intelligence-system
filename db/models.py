@@ -1,5 +1,6 @@
-from sqlalchemy import (Column, Integer, String, Float, Date, ForeignKey)
+from sqlalchemy import (Column, Integer, String, Float, Date, ForeignKey,Boolean, DateTime,Text)
 
+from datetime import datetime,timezone
 # now importing object relational mapper from sqlalchemy
 from sqlalchemy.orm import relationship
 
@@ -78,4 +79,64 @@ class Repayments(Base):
     # Relationships
     loan = relationship("Loan",back_populates="repayments")
     
+    
+class DecisionAuditLog(Base):
+    __tablename__ = "decision_audit_logs"
+    audit_id = Column(String,primary_key=True, index=True)
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    model_name = Column(String)
+    model_threshold = Column(Float)
+
+    policy_version = Column(String)
+
+    age = Column(Integer)
+    annual_income = Column(Float)
+    existing_debt = Column(Float)
+    credit_score = Column(Integer)
+    employment_status = Column(String)
+    region = Column(String)
+    segment = Column(String)
+    channel = Column(String)
+
+    requested_amount = Column(Float)
+    loan_term_months = Column(Integer)
+    interest_rate = Column(Float)
+
+    is_secured = Column(Boolean)
+    collateral_type = Column(String)
+    collateral_value = Column(Float)
+    collateral_coverage_ratio = Column(Float)
+
+    raw_probability_of_default = Column(Float)
+    adjusted_probability_of_default = Column(Float)
+    loss_given_default = Column(Float)
+    loss_given_default_percent = Column(Float)
+    lgd_reason_code = Column(String)
+
+    term_risk_multiplier = Column(Float)
+    adjustment_reason_code = Column(String)
+
+    expected_loss = Column(Float)
+    expected_interest_income = Column(Float)
+    risk_adjusted_income = Column(Float)
+    cost_of_capital = Column(Float)
+    risk_adjusted_net_profit = Column(Float)
+    is_profitable = Column(Boolean)
+
+    policy_status = Column(String)
+    policy_passed = Column(Boolean)
+    requires_manual_review = Column(Boolean)
+
+    final_decision = Column(String)
+
+    primary_reason_codes = Column(Text)
+    rejection_reason_codes = Column(Text)
+    review_reason_codes = Column(Text)
+    passed_rules = Column(Text)
+    evaluated_thresholds = Column(Text)
     
