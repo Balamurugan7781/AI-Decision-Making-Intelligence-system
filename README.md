@@ -94,7 +94,9 @@ Raw PD = 28.33%
 
 The PD output is then passed into the risk-adjustment and financial evaluation layers.
 
-4. Term-Risk Adjustment
+---
+
+### 4. Term-Risk Adjustment
 
 Longer loan terms can create additional uncertainty.
 
@@ -108,7 +110,9 @@ Adjusted PD = 32.58%
 
 This makes the system more conservative for longer-duration loans.
 
-5. Collateral-Aware LGD Engine
+---
+
+### 5. Collateral-Aware LGD Engine
 
 The project now supports secured and unsecured loans.
 
@@ -132,7 +136,9 @@ Low collateral coverage	60%	LOW_COLLATERAL_COVERAGE_HIGH_LGD
 
 This improves the realism of expected-loss calculation because unsecured and secured loans should not carry the same loss assumption.
 
-6. Financial Evaluation Engine
+---
+
+### 6. Financial Evaluation Engine
 
 The financial engine calculates the expected financial outcome of a loan using adjusted PD and LGD.
 
@@ -162,7 +168,10 @@ Risk-adjusted income
 Cost of capital
 Risk-adjusted net profit
 Profitability flag
-7. Policy-as-Code Engine
+
+---
+
+### 7. Policy-as-Code Engine
 
 The system uses structured policy configuration to apply lending rules.
 
@@ -187,7 +196,9 @@ Policy version
 
 This makes the lending logic more auditable and maintainable than hard-coded conditions.
 
-8. Decision Engine
+---
+
+### 8. Decision Engine
 
 The decision engine combines:
 
@@ -213,7 +224,9 @@ EXPECTED_LOSS_EXCEEDS_ALLOWED_INCOME_RATIO
 The LLM does not make lending decisions.
 The core decision pipeline remains deterministic, testable, and auditable.
 
-9. FastAPI Endpoint
+---
+
+### 9. FastAPI Endpoint
 
 The project includes a FastAPI backend for real-time loan evaluation.
 
@@ -223,6 +236,7 @@ POST /evaluate-loan
 
 Example request:
 
+```text
 {
   "age": 42,
   "annual_income": 120000,
@@ -239,9 +253,10 @@ Example request:
   "segment": "prime",
   "channel": "web"
 }
-
+```
 Example LGD result:
 
+``` text
 {
   "is_secured": true,
   "loss_given_default": 0.3,
@@ -252,6 +267,7 @@ Example LGD result:
   "collateral_type": "gold",
   "collateral_value": 9000
 }
+```
 10. Decision Audit Logging
 
 Every loan evaluation is stored in the database for traceability.
