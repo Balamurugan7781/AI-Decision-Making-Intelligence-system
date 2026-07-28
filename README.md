@@ -334,7 +334,7 @@ Risk-adjusted profitability by segment
 Decision distribution by region and channel
 Current Architecture
 flowchart TD
-
+```markdown
     A[Loan Application Input]
     B[Feature Engineering]
     C[PD Model Prediction]
@@ -362,6 +362,7 @@ flowchart TD
     J --> K
     J --> L
     M --> L
+```
 Folder Structure
 AI-FinTech-Decision-Intelligence-System/
 │
