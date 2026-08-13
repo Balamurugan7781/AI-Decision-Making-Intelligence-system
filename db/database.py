@@ -1,40 +1,29 @@
-# This is for creating connections with the database using SQLAlchemy.
-
-
-from sqlalchemy import create_engine
-
-from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
-# Project paths
 
+load_dotenv()
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///data/business.db")
 
-DATA_DIR = os.path.join(BASE_DIR, "data")
+connect_args = {}
 
-os.makedirs(DATA_DIR, exist_ok=True)
-Database_path = os.path.join(DATA_DIR, "business.db")
-database_url = f"sqlite:///{Database_path}"
+if DATABASE_URL.startswith("sqlite"):
+    connect_args = {"check_same_thread": False}
 
-# Creating SQLAlchemy engine and session
-engine = create_engine(database_url, connect_args={"check_same_thread": False})
+engine = create_engine(
+    DATABASE_URL,
+    connect_args=connect_args,
+    pool_pre_ping=True,
+)
 
-# Session Factory
-SessionLocal = sessionmaker(autocommit=False, autoflush = False, bind = engine)
-
-# Declarative Base....
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 Base = declarative_base()
-
-
-# FastAPI DB dependency
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
